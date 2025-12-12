@@ -1,0 +1,20 @@
+# Ignore generated files
+internal/db/
+
+# Environment variables
+.env
+
+# Binary
+/bin/
+/tmp/
+
+# Test coverage
+*.out
+coverage.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
