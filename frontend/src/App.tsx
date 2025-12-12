@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import Dashboard from './pages/Dashboard';
-import RecipeList from './pages/RecipeList';
-import RecipeDetail from './pages/RecipeDetail';
-import RecipeForm from './pages/RecipeForm';
-import SpinPage from './pages/SpinPage';
 import './App.css';
+
+// Lazy load pages for better performance
+const Dashboard = React.lazy(() => import('./pages/Dashboard'));
+const RecipeList = React.lazy(() => import('./pages/RecipeList'));
+const RecipeDetail = React.lazy(() => import('./pages/RecipeDetail'));
+const RecipeForm = React.lazy(() => import('./pages/RecipeForm'));
+const SpinPage = React.lazy(() => import('./pages/SpinPage'));
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -17,6 +19,31 @@ const queryClient = new QueryClient({
         },
     },
 });
+
+// Loading component
+const PageLoader = () => (
+    <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '60vh',
+        fontSize: '18px',
+        color: '#667eea'
+    }}>
+        <div style={{ textAlign: 'center' }}>
+            <div style={{
+                width: '50px',
+                height: '50px',
+                border: '4px solid #f3f3f3',
+                borderTop: '4px solid #667eea',
+                borderRadius: '50%',
+                animation: 'spin 1s linear infinite',
+                margin: '0 auto 20px'
+            }}></div>
+            Loading...
+        </div>
+    </div>
+);
 
 function App() {
     return (
@@ -36,14 +63,16 @@ function App() {
                         </div>
                     </nav>
 
-                    <Routes>
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path="/recipes" element={<RecipeList />} />
-                        <Route path="/recipes/new" element={<RecipeForm />} />
-                        <Route path="/recipes/:id" element={<RecipeDetail />} />
-                        <Route path="/recipes/:id/edit" element={<RecipeForm />} />
-                        <Route path="/spin" element={<SpinPage />} />
-                    </Routes>
+                    <Suspense fallback={<PageLoader />}>
+                        <Routes>
+                            <Route path="/" element={<Dashboard />} />
+                            <Route path="/recipes" element={<RecipeList />} />
+                            <Route path="/recipes/new" element={<RecipeForm />} />
+                            <Route path="/recipes/:id" element={<RecipeDetail />} />
+                            <Route path="/recipes/:id/edit" element={<RecipeForm />} />
+                            <Route path="/spin" element={<SpinPage />} />
+                        </Routes>
+                    </Suspense>
                 </div>
             </BrowserRouter>
         </QueryClientProvider>
