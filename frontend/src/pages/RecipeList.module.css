@@ -19,7 +19,7 @@
 }
 
 .addButton {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2F8F5B 0%, #F4A261 100%);
     color: white;
     padding: 12px 24px;
     border-radius: 8px;
@@ -54,7 +54,7 @@
 .searchInput:focus,
 .select:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #2F8F5B;
 }
 
 .loading,
@@ -181,7 +181,7 @@
 }
 
 .viewButton {
-    background: #667eea;
+    background: #2F8F5B;
     color: white;
 }
 
@@ -217,8 +217,8 @@
 .pageButton {
     padding: 10px 20px;
     background: white;
-    border: 2px solid #667eea;
-    color: #667eea;
+    border: 2px solid #2F8F5B;
+    color: #2F8F5B;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
@@ -226,7 +226,7 @@
 }
 
 .pageButton:hover:not(:disabled) {
-    background: #667eea;
+    background: #2F8F5B;
     color: white;
 }
 

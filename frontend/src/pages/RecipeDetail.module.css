@@ -179,7 +179,7 @@
     color: #333;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 2px solid #667eea;
+    border-bottom: 2px solid #2F8F5B;
 }
 
 .ingredientsList {
@@ -228,7 +228,7 @@
     top: 16px;
     width: 28px;
     height: 28px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2F8F5B 0%, #F4A261 100%);
     color: white;
     border-radius: 50%;
     display: flex;
