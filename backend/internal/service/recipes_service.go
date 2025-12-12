@@ -56,11 +56,42 @@ type RecipeFilters struct {
 	PerPage        int
 }
 
+// CreateRecipeRequest holds data for creating a recipe
+type CreateRecipeRequest struct {
+	Title        string  `json:"title"`
+	Description  string  `json:"description"`
+	Ingredients  string  `json:"ingredients"`
+	Instructions string  `json:"instructions"`
+	CookingTime  int32   `json:"cooking_time"`
+	SkillLevel   string  `json:"skill_level"`
+	CategoryID   int32   `json:"category_id"`
+	VariantID    int32   `json:"variant_id"`
+	ImageURL     *string `json:"image_url,omitempty"`
+	Servings     int32   `json:"servings"`
+}
+
+// UpdateRecipeRequest holds data for updating a recipe
+type UpdateRecipeRequest struct {
+	Title        string  `json:"title"`
+	Description  string  `json:"description"`
+	Ingredients  string  `json:"ingredients"`
+	Instructions string  `json:"instructions"`
+	CookingTime  int32   `json:"cooking_time"`
+	SkillLevel   string  `json:"skill_level"`
+	CategoryID   int32   `json:"category_id"`
+	VariantID    int32   `json:"variant_id"`
+	ImageURL     *string `json:"image_url,omitempty"`
+	Servings     int32   `json:"servings"`
+}
+
 // RecipesService defines the interface for recipe business logic
 type RecipesService interface {
 	ListRecipes(ctx context.Context, filters RecipeFilters) (*RecipesListResponse, error)
 	GetRecipeByID(ctx context.Context, id int32) (*Recipe, error)
 	GetRandomRecipe(ctx context.Context, filters RecipeFilters) (*Recipe, error)
+	CreateRecipe(ctx context.Context, req CreateRecipeRequest) (*Recipe, error)
+	UpdateRecipe(ctx context.Context, id int32, req UpdateRecipeRequest) (*Recipe, error)
+	DeleteRecipe(ctx context.Context, id int32) error
 }
 
 type recipesService struct {
@@ -231,4 +262,106 @@ func nullStringToPtr(ns sql.NullString) *string {
 		return nil
 	}
 	return &ns.String
+}
+
+func (s *recipesService) CreateRecipe(ctx context.Context, req CreateRecipeRequest) (*Recipe, error) {
+	// Validate skill level
+	if !isValidSkillLevel(req.SkillLevel) {
+		return nil, fmt.Errorf("%w: invalid skill_level", ErrInvalidParams)
+	}
+
+	// Validate required fields
+	if req.Title == "" || req.Description == "" || req.Ingredients == "" || req.Instructions == "" {
+		return nil, fmt.Errorf("%w: title, description, ingredients, and instructions are required", ErrInvalidParams)
+	}
+
+	if req.CookingTime < 1 || req.Servings < 1 {
+		return nil, fmt.Errorf("%w: cooking_time and servings must be positive", ErrInvalidParams)
+	}
+
+	id, err := s.repo.CreateRecipe(ctx, repository.CreateRecipeParams{
+		Title:        req.Title,
+		Description:  req.Description,
+		Ingredients:  req.Ingredients,
+		Instructions: req.Instructions,
+		CookingTime:  req.CookingTime,
+		SkillLevel:   req.SkillLevel,
+		CategoryID:   req.CategoryID,
+		VariantID:    req.VariantID,
+		ImageURL:     req.ImageURL,
+		Servings:     req.Servings,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create recipe: %w", err)
+	}
+
+	// Fetch the created recipe
+	return s.GetRecipeByID(ctx, int32(id))
+}
+
+func (s *recipesService) UpdateRecipe(ctx context.Context, id int32, req UpdateRecipeRequest) (*Recipe, error) {
+	// Validate ID
+	if id < 1 {
+		return nil, fmt.Errorf("%w: invalid recipe ID", ErrInvalidParams)
+	}
+
+	// Validate skill level
+	if !isValidSkillLevel(req.SkillLevel) {
+		return nil, fmt.Errorf("%w: invalid skill_level", ErrInvalidParams)
+	}
+
+	// Validate required fields
+	if req.Title == "" || req.Description == "" || req.Ingredients == "" || req.Instructions == "" {
+		return nil, fmt.Errorf("%w: title, description, ingredients, and instructions are required", ErrInvalidParams)
+	}
+
+	if req.CookingTime < 1 || req.Servings < 1 {
+		return nil, fmt.Errorf("%w: cooking_time and servings must be positive", ErrInvalidParams)
+	}
+
+	// Check if recipe exists
+	_, err := s.repo.GetRecipeByID(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("%w: recipe not found", ErrRecipeNotFound)
+	}
+
+	err = s.repo.UpdateRecipe(ctx, repository.UpdateRecipeParams{
+		ID:           id,
+		Title:        req.Title,
+		Description:  req.Description,
+		Ingredients:  req.Ingredients,
+		Instructions: req.Instructions,
+		CookingTime:  req.CookingTime,
+		SkillLevel:   req.SkillLevel,
+		CategoryID:   req.CategoryID,
+		VariantID:    req.VariantID,
+		ImageURL:     req.ImageURL,
+		Servings:     req.Servings,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to update recipe: %w", err)
+	}
+
+	// Fetch the updated recipe
+	return s.GetRecipeByID(ctx, id)
+}
+
+func (s *recipesService) DeleteRecipe(ctx context.Context, id int32) error {
+	// Validate ID
+	if id < 1 {
+		return fmt.Errorf("%w: invalid recipe ID", ErrInvalidParams)
+	}
+
+	// Check if recipe exists
+	_, err := s.repo.GetRecipeByID(ctx, id)
+	if err != nil {
+		return fmt.Errorf("%w: recipe not found", ErrRecipeNotFound)
+	}
+
+	err = s.repo.DeleteRecipe(ctx, id)
+	if err != nil {
+		return fmt.Errorf("failed to delete recipe: %w", err)
+	}
+
+	return nil
 }

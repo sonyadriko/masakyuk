@@ -97,3 +97,28 @@ ORDER BY name;
 SELECT id, name, description, created_at, updated_at
 FROM variants
 ORDER BY name;
+
+-- name: CreateRecipe :execresult
+INSERT INTO recipes (
+    title, description, ingredients, instructions, 
+    cooking_time, skill_level, category_id, variant_id, 
+    image_url, servings
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- name: UpdateRecipe :exec
+UPDATE recipes SET
+    title = ?,
+    description = ?,
+    ingredients = ?,
+    instructions = ?,
+    cooking_time = ?,
+    skill_level = ?,
+    category_id = ?,
+    variant_id = ?,
+    image_url = ?,
+    servings = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ?;
+
+-- name: DeleteRecipe :exec
+DELETE FROM recipes WHERE id = ?;

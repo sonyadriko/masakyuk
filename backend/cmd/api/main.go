@@ -124,7 +124,12 @@ func setupRouter(cfg *config.Config, recipesHandler *handler.RecipesHandler) *gi
 	{
 		// Recipes endpoints
 		api.GET("/recipes", recipesHandler.ListRecipes)
+		api.POST("/recipes", recipesHandler.CreateRecipe)
 		api.GET("/recipes/:id", recipesHandler.GetRecipeByID)
+		api.PUT("/recipes/:id", recipesHandler.UpdateRecipe)
+		api.DELETE("/recipes/:id", recipesHandler.DeleteRecipe)
+
+		// Spin wheel endpoint (bonus feature)
 		api.POST("/spin", recipesHandler.Spin)
 	}
 

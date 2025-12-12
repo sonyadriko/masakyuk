@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/sonyadriko/masakyuk/internal/db"
 )
@@ -12,6 +13,9 @@ type RecipesRepository interface {
 	ListRecipes(ctx context.Context, params ListRecipesParams) ([]db.ListRecipesRow, error)
 	CountRecipes(ctx context.Context, params CountRecipesParams) (int64, error)
 	GetRandomRecipe(ctx context.Context, params GetRandomRecipeParams) (db.GetRandomRecipeRow, error)
+	CreateRecipe(ctx context.Context, params CreateRecipeParams) (int64, error)
+	UpdateRecipe(ctx context.Context, params UpdateRecipeParams) error
+	DeleteRecipe(ctx context.Context, id int32) error
 	ListCategories(ctx context.Context) ([]db.Category, error)
 	ListVariants(ctx context.Context) ([]db.Variant, error)
 }
@@ -43,6 +47,35 @@ type GetRandomRecipeParams struct {
 	VariantID      *int32
 	CategoryID     *int32
 	MaxCookingTime *int32
+}
+
+// CreateRecipeParams holds parameters for creating a recipe
+type CreateRecipeParams struct {
+	Title        string
+	Description  string
+	Ingredients  string
+	Instructions string
+	CookingTime  int32
+	SkillLevel   string
+	CategoryID   int32
+	VariantID    int32
+	ImageURL     *string
+	Servings     int32
+}
+
+// UpdateRecipeParams holds parameters for updating a recipe
+type UpdateRecipeParams struct {
+	ID           int32
+	Title        string
+	Description  string
+	Ingredients  string
+	Instructions string
+	CookingTime  int32
+	SkillLevel   string
+	CategoryID   int32
+	VariantID    int32
+	ImageURL     *string
+	Servings     int32
 }
 
 // recipesRepository implements RecipesRepository
@@ -132,4 +165,54 @@ func (r *recipesRepository) ListCategories(ctx context.Context) ([]db.Category, 
 
 func (r *recipesRepository) ListVariants(ctx context.Context) ([]db.Variant, error) {
 	return r.queries.ListVariants(ctx)
+}
+
+func (r *recipesRepository) CreateRecipe(ctx context.Context, params CreateRecipeParams) (int64, error) {
+	var imageURL sql.NullString
+	if params.ImageURL != nil {
+		imageURL = sql.NullString{String: *params.ImageURL, Valid: true}
+	}
+
+	result, err := r.queries.CreateRecipe(ctx, db.CreateRecipeParams{
+		Title:        params.Title,
+		Description:  params.Description,
+		Ingredients:  params.Ingredients,
+		Instructions: params.Instructions,
+		CookingTime:  params.CookingTime,
+		SkillLevel:   params.SkillLevel,
+		CategoryID:   params.CategoryID,
+		VariantID:    params.VariantID,
+		ImageUrl:     imageURL,
+		Servings:     params.Servings,
+	})
+	if err != nil {
+		return 0, err
+	}
+
+	return result.LastInsertId()
+}
+
+func (r *recipesRepository) UpdateRecipe(ctx context.Context, params UpdateRecipeParams) error {
+	var imageURL sql.NullString
+	if params.ImageURL != nil {
+		imageURL = sql.NullString{String: *params.ImageURL, Valid: true}
+	}
+
+	return r.queries.UpdateRecipe(ctx, db.UpdateRecipeParams{
+		Title:        params.Title,
+		Description:  params.Description,
+		Ingredients:  params.Ingredients,
+		Instructions: params.Instructions,
+		CookingTime:  params.CookingTime,
+		SkillLevel:   params.SkillLevel,
+		CategoryID:   params.CategoryID,
+		VariantID:    params.VariantID,
+		ImageUrl:     imageURL,
+		Servings:     params.Servings,
+		ID:           params.ID,
+	})
+}
+
+func (r *recipesRepository) DeleteRecipe(ctx context.Context, id int32) error {
+	return r.queries.DeleteRecipe(ctx, id)
 }

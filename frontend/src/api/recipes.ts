@@ -1,5 +1,5 @@
 import apiClient from './client';
-import type { RecipeFilters, RecipesListResponse, SpinRequest, SpinResponse } from '@/types/recipe';
+import type { RecipeFilters, RecipesListResponse, SpinRequest, SpinResponse, Recipe } from '@/types/recipe';
 
 export const recipesApi = {
     /**
@@ -21,18 +21,41 @@ export const recipesApi = {
     },
 
     /**
+     * Get a single recipe by ID
+     */
+    getRecipeById: async (id: number): Promise<Recipe> => {
+        const response = await apiClient.get(`/recipes/${id}`);
+        return response.data.data;
+    },
+
+    /**
+     * Create a new recipe
+     */
+    createRecipe: async (data: Omit<Recipe, 'id' | 'category_name' | 'variant_name'>): Promise<Recipe> => {
+        const response = await apiClient.post('/recipes', data);
+        return response.data.data;
+    },
+
+    /**
+     * Update an existing recipe
+     */
+    updateRecipe: async (id: number, data: Omit<Recipe, 'id' | 'category_name' | 'variant_name'>): Promise<Recipe> => {
+        const response = await apiClient.put(`/recipes/${id}`, data);
+        return response.data.data;
+    },
+
+    /**
+     * Delete a recipe
+     */
+    deleteRecipe: async (id: number): Promise<void> => {
+        await apiClient.delete(`/recipes/${id}`);
+    },
+
+    /**
      * Spin the wheel to get a random recipe
      */
     spinWheel: async (filters: SpinRequest = {}): Promise<SpinResponse> => {
         const response = await apiClient.post<SpinResponse>('/spin', filters);
-        return response.data;
-    },
-
-    /**
-     * Get a single recipe by ID
-     */
-    getRecipeById: async (id: number) => {
-        const response = await apiClient.get(`/recipes/${id}`);
         return response.data;
     },
 };

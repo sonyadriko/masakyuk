@@ -181,3 +181,80 @@ func (h *RecipesHandler) GetRecipeByID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": recipe})
 }
+
+// CreateRecipe handles POST /api/recipes
+func (h *RecipesHandler) CreateRecipe(c *gin.Context) {
+	var req service.CreateRecipeRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request body"})
+		return
+	}
+
+	recipe, err := h.service.CreateRecipe(c.Request.Context(), req)
+	if err != nil {
+		if errors.Is(err, service.ErrInvalidParams) {
+			c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "failed to create recipe"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"data": recipe})
+}
+
+// UpdateRecipe handles PUT /api/recipes/:id
+func (h *RecipesHandler) UpdateRecipe(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 32)
+	if err != nil || id < 1 {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid recipe ID"})
+		return
+	}
+
+	var req service.UpdateRecipeRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request body"})
+		return
+	}
+
+	recipe, err := h.service.UpdateRecipe(c.Request.Context(), int32(id), req)
+	if err != nil {
+		if errors.Is(err, service.ErrRecipeNotFound) {
+			c.JSON(http.StatusNotFound, ErrorResponse{Error: "recipe not found"})
+			return
+		}
+		if errors.Is(err, service.ErrInvalidParams) {
+			c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "failed to update recipe"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": recipe})
+}
+
+// DeleteRecipe handles DELETE /api/recipes/:id
+func (h *RecipesHandler) DeleteRecipe(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 32)
+	if err != nil || id < 1 {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid recipe ID"})
+		return
+	}
+
+	err = h.service.DeleteRecipe(c.Request.Context(), int32(id))
+	if err != nil {
+		if errors.Is(err, service.ErrRecipeNotFound) {
+			c.JSON(http.StatusNotFound, ErrorResponse{Error: "recipe not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "failed to delete recipe"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "recipe deleted successfully"})
+}
