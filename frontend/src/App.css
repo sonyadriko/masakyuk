@@ -10,7 +10,7 @@ body {
         sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: #f5f5f5;
+    background: #FAFAF7;
 }
 
 #root {
@@ -43,7 +43,7 @@ body {
 .nav-logo {
     font-size: 24px;
     font-weight: 700;
-    color: #667eea;
+    color: #2F8F5B;
     text-decoration: none;
     transition: transform 0.2s;
 }
@@ -58,7 +58,7 @@ body {
 }
 
 .nav-link {
-    color: #333;
+    color: #1F2933;
     text-decoration: none;
     font-weight: 600;
     font-size: 16px;
@@ -67,7 +67,7 @@ body {
 }
 
 .nav-link:hover {
-    color: #667eea;
+    color: #2F8F5B;
 }
 
 .nav-link::after {
@@ -77,7 +77,7 @@ body {
     left: 0;
     width: 0;
     height: 3px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2F8F5B 0%, #F4A261 100%);
     transition: width 0.3s;
 }
 

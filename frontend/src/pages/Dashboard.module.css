@@ -63,7 +63,7 @@
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2F8F5B 0%, #256F47 100%);
     padding: 80px 20px;
     text-align: center;
     color: white;
@@ -84,7 +84,7 @@
 }
 
 .gradient {
-    background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+    background: linear-gradient(135deg, #F4A261 0%, #E76F51 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -142,7 +142,7 @@
 
 .primaryButton {
     background: white;
-    color: #667eea;
+    color: #2F8F5B;
 }
 
 .primaryButton:hover {
@@ -201,7 +201,7 @@
 
 .statCard:hover {
     transform: translateY(-8px) scale(1.03);
-    box-shadow: 0 12px 24px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 12px 24px rgba(47, 143, 91, 0.2);
 }
 
 .statIcon {
@@ -217,13 +217,13 @@
 .statValue {
     font-size: 32px;
     font-weight: 800;
-    color: #667eea;
+    color: #2F8F5B;
     margin-bottom: 5px;
     transition: color 0.3s;
 }
 
 .statCard:hover .statValue {
-    color: #764ba2;
+    color: #F4A261;
 }
 
 .statLabel {
@@ -289,7 +289,7 @@
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2F8F5B 0%, #F4A261 100%);
     transform: scaleX(0);
     transition: transform 0.4s;
 }
@@ -323,7 +323,7 @@
 }
 
 .featureCard:hover .featureTitle {
-    color: #667eea;
+    color: #2F8F5B;
 }
 
 .featureDescription {
@@ -347,14 +347,14 @@
 }
 
 .viewAllLink {
-    color: #667eea;
+    color: #2F8F5B;
     font-weight: 600;
     text-decoration: none;
     transition: color 0.2s;
 }
 
 .viewAllLink:hover {
-    color: #764ba2;
+    color: #F4A261;
 }
 
 .recipesGrid {
@@ -395,7 +395,7 @@
     left: 0;
     width: 100%;
     height: 3px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2F8F5B 0%, #F4A261 100%);
     transform: scaleX(0);
     transition: transform 0.4s;
 }
@@ -406,7 +406,7 @@
 
 .recipeCard:hover {
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 8px 24px rgba(47, 143, 91, 0.2);
 }
 
 .recipeHeader {
@@ -467,7 +467,7 @@
 
 /* CTA Section */
 .cta {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2F8F5B 0%, #256F47 100%);
     padding: 80px 20px;
     text-align: center;
     color: white;
@@ -506,7 +506,7 @@
 
 .ctaPrimaryButton {
     background: white;
-    color: #667eea;
+    color: #2F8F5B;
 }
 
 .ctaPrimaryButton:hover {
